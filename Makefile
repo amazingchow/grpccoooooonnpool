@@ -26,4 +26,4 @@ endif
 clean:
 	rm -f $(ALL_TARGETS)
 
-.PHONY: all build clean
+.PHONY: all build ci_build clean
