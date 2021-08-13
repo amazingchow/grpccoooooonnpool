@@ -17,7 +17,7 @@ func main() {
 		MaxIdles:             32,
 		MaxActives:           64,
 		MaxConcurrentStreams: 100,
-		Reuse:                false,
+		Reuse:                true,
 	})
 	if err != nil {
 		log.Fatalf("failed to create gpool, err: %v\n", err)
