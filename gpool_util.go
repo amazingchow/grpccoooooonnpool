@@ -57,7 +57,7 @@ func (p *GrpcConnPool) shrink(begin int32) {
 func (p *GrpcConnPool) recycleResouce(index int32) {
 	conn := p.conns[index]
 	if conn != nil {
-		conn.recycle()
+		_ = conn.recycle()
 		p.conns[index] = nil
 	}
 }

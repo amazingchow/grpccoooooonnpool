@@ -43,7 +43,7 @@ func NewGrpcConnPool(addr string, opts PoolOptions) (*GrpcConnPool, error) {
 	for i := int32(0); i < p.pOpts.MaxIdles; i++ {
 		conn, err := p.pOpts.Dial(p.addr)
 		if err != nil {
-			p.Release()
+			_ = p.Release()
 			return nil, &PoolError{Msg: err.Error(), Err: ErrCreatePool}
 		}
 		p.conns[i] = &GrpcConn{
@@ -62,7 +62,7 @@ func NewGrpcConnPool(addr string, opts PoolOptions) (*GrpcConnPool, error) {
 func (p *GrpcConnPool) Status() string {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
-	return fmt.Sprintf("<\n\tServer Address: %s\n\tLogical Conn Used Ref: %d\n\tMax Idles: %d>\n\tMax Actives: %d\n>",
+	return fmt.Sprintf("\n<\n\tServer Address: %s\n\tLogical Conn Used Ref: %d\n\tMax Idles: %d\n\tMax Actives: %d\n>",
 		p.addr, p.lConnUsedRef, p.pOpts.MaxIdles, p.pOpts.MaxActives)
 }
 
