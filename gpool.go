@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sync/atomic"
+
+	"github.com/pkg/errors"
 )
 
 type GrpcConnPool struct {
@@ -46,7 +48,7 @@ func NewGrpcConnPool(addr string, opts PoolOptions) (*GrpcConnPool, error) {
 		conn, err := p.pOpts.Dial(p.addr)
 		if err != nil {
 			_ = p.Release()
-			return nil, &PoolError{Msg: err.Error(), Err: ErrCreatePool}
+			return nil, errors.Wrapf(err, "failed to create pool")
 		}
 		p.conns[i] = &GrpcConn{
 			conn:  conn,
