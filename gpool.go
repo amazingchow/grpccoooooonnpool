@@ -41,7 +41,7 @@ func NewGrpcConnPool(addr string, opts PoolOptions) (*GrpcConnPool, error) {
 
 	for i := uint32(0); i < opts.MaxConcurrentStreams; i++ {
 		for j := uint32(0); j < opts.MaxIdles; j++ {
-			p.q.Push(j)
+			p.q.Push(int(j))
 		}
 	}
 	for i := uint32(0); i < opts.MaxIdles; i++ {
@@ -53,7 +53,7 @@ func NewGrpcConnPool(addr string, opts PoolOptions) (*GrpcConnPool, error) {
 		p.conns[i] = &GrpcConn{
 			conn:  conn,
 			pool:  p,
-			index: i,
+			index: int(i),
 		}
 	}
 

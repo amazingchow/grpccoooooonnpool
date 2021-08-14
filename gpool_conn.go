@@ -8,7 +8,7 @@ import (
 type GrpcConn struct {
 	conn  *grpc.ClientConn
 	pool  *GrpcConnPool
-	index uint32
+	index int
 }
 
 // Underlay returns the actual grpc connection.
