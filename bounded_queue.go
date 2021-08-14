@@ -11,19 +11,19 @@ type BoundedQueue struct {
 	cond *sync.Cond
 
 	q   *deque.Deque
-	len int
-	cap int
+	len uint32
+	cap uint32
 }
 
 // NewBoundedQueue returns a new BoundedQueue instance.
-func NewBoundedQueue(cap int) *BoundedQueue {
+func NewBoundedQueue(cap uint32) *BoundedQueue {
 	if cap == 0 {
-		cap = 64
+		cap = 800
 	}
 
 	q := &BoundedQueue{
 		cond: sync.NewCond(&sync.Mutex{}),
-		q:    deque.New(cap),
+		q:    deque.New(int(cap)),
 		len:  0,
 		cap:  cap,
 	}
@@ -32,38 +32,48 @@ func NewBoundedQueue(cap int) *BoundedQueue {
 }
 
 // Push adds conn into the queue.
-func (q *BoundedQueue) Push(conn *GrpcConn) {
+func (q *BoundedQueue) Push(x int) {
 	q.cond.L.Lock()
-	for q.q.Len() == q.cap {
+	for uint32(q.q.Len()) == q.Cap() {
 		// P1: queue is full now, wait for consumers to pop conn.
 		q.cond.Wait()
 	}
 	defer q.cond.L.Unlock()
 
-	q.q.PushBack(conn)
+	q.q.PushBack(x)
 	// P2 -> P3: tell consumers that there is conn enqueued.
 	q.cond.Broadcast()
 }
 
 // Pop gets conn from the queue.
-func (q *BoundedQueue) Pop() *GrpcConn {
+func (q *BoundedQueue) Pop(canWait bool) int {
 	q.cond.L.Lock()
 	for q.q.Len() == 0 {
+		if !canWait {
+			q.cond.L.Unlock()
+			return -1
+		}
 		// P3: queue is empty now, wait for producers to push conn.
+		// TODO: implement q.cond.WaitWithTimeout(timeout time.Duration)
 		q.cond.Wait()
 	}
 	defer q.cond.L.Unlock()
 
-	conn := q.q.PopFront().(*GrpcConn)
+	x := q.q.PopFront().(int)
 
 	// P4 -> P1: tell producers that there is conn dequeued.
 	q.cond.Broadcast()
-	return conn
+	return x
 }
 
 // Len gets the length of the queue.
-func (q *BoundedQueue) Len() int {
+func (q *BoundedQueue) Len() uint32 {
 	q.cond.L.Lock()
 	defer q.cond.L.Unlock()
-	return q.q.Len()
+	return uint32(q.q.Len())
+}
+
+// Len gets the capacity of the queue.
+func (q *BoundedQueue) Cap() uint32 {
+	return uint32(q.q.Cap())
 }

@@ -13,11 +13,10 @@ import (
 
 func main() {
 	p, err := gpool.NewGrpcConnPool("localhost:18889", gpool.PoolOptions{
-		Dial:                 gpool.DefaultDialWithInsecure,
-		MaxIdles:             32,
-		MaxActives:           64,
+		Dial:     gpool.DefaultDialWithInsecure,
+		MaxIdles: 32,
+		// MaxActives:           64,
 		MaxConcurrentStreams: 100,
-		Reuse:                true,
 	})
 	if err != nil {
 		log.Fatalf("failed to create gpool, err: %v\n", err)
@@ -27,7 +26,7 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		conn, err := p.Get(ctx)
+		conn, err := p.PickOne(true)
 		if err != nil {
 			log.Printf("failed to fetch conn from gpool, err: %v\n", err)
 			w.WriteHeader(500)
