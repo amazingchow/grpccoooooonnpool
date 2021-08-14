@@ -24,16 +24,16 @@ func main() {
 	}
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		conn, err := p.Get()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		conn, err := p.Get(ctx)
 		if err != nil {
 			log.Printf("failed to fetch conn from gpool, err: %v\n", err)
 			w.WriteHeader(500)
 			return
 		}
 		cli := pb.NewGreeterClient(conn.Underlay())
-
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
 
 		resp, err := cli.SayHello(ctx, &pb.HelloRequest{Name: "Grpc"})
 		if err != nil {
@@ -43,6 +43,8 @@ func main() {
 		}
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(resp.Message))
+
+		_ = conn.Close()
 	}
 
 	http.HandleFunc("/performance", handler)
