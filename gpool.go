@@ -1,6 +1,7 @@
 package gpool
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
@@ -69,7 +70,7 @@ func (p *GrpcConnPool) Status() string {
 
 // Get returns a available connection from the pool.
 // User should use GrpcConn.Close() to put the connection back to the pool.
-func (p *GrpcConnPool) Get() (*GrpcConn, error) {
+func (p *GrpcConnPool) Get(ctx context.Context) (*GrpcConn, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -88,7 +89,7 @@ func (p *GrpcConnPool) Get() (*GrpcConn, error) {
 
 	if p.pCurrConns == p.pOpts.MaxActives {
 		if p.pOpts.Reuse {
-			// use round-robin to load balance
+			// TODO：wait for others to return grpc connection
 			p.lConnIndex++
 			return p.conns[p.lConnIndex%p.pCurrConns], nil
 		}
@@ -129,7 +130,6 @@ func (p *GrpcConnPool) Get() (*GrpcConn, error) {
 		p.pCurrConns, p.pCurrConns+i, i, p.pOpts.MaxIdles, p.pOpts.MaxActives)
 	p.pCurrConns += i
 
-	// use round-robin to load balance
 	p.lConnIndex++
 	return p.conns[p.lConnIndex%p.pCurrConns], nil
 }
