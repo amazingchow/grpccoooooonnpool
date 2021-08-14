@@ -21,6 +21,7 @@ type GrpcConnPool struct {
 	/* options of the grpc connection pool */
 	pOpts PoolOptions
 	/* all of created physical connections */
+	// TODO: clean nil conn
 	conns []*GrpcConn
 	/* the server address to create connection */
 	addr string

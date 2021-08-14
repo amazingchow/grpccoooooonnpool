@@ -16,13 +16,23 @@ func (c *GrpcConn) Underlay() *grpc.ClientConn {
 	return c.conn
 }
 
-// Close decreases the reference of grpc connection if pool not full or just close it.
+// Close decreases the reference of grpc connection if pool not full
+// or just close the underlay TCP connection.
 func (c *GrpcConn) Close() error {
 	c.pool.decrRef()
 	if c.once {
 		return c.recycle()
 	}
 	return nil
+}
+
+// ForceClose decreases the reference of grpc connection and close the
+// underlay TCP connection.
+// If user fetch a invalid grpc connection (timeout, server restart , etc...),
+// it's user's responsibility to use ForceClose() but not Close().
+func (c *GrpcConn) ForceClose() error {
+	c.pool.decrRef()
+	return c.recycle()
 }
 
 func (c *GrpcConn) recycle() error {
