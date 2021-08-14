@@ -26,7 +26,7 @@ type GrpcConnPool struct {
 	pOpts PoolOptions
 	/* all of created physical connections */
 	// TODO: clean nil conn
-	// TODO: use lock-free queue to manage conns and remove sync.RWMutex
+	// TODO: use BoundedQueue to manage conns and remove sync.RWMutex
 	conns []*GrpcConn
 	/* the server address to create connection */
 	addr string
