@@ -12,17 +12,21 @@ type GrpcConnPool struct {
 	mu sync.RWMutex
 
 	/* used to get logical connection */
+	// TODO: use atomic val
 	lConnIndex int32
 	/* used to get the using logical connections
 	   logical connections = physical connections * MaxConcurrentStreams */
+	// TODO: use atomic val
 	lConnUsedRef int32
 	/* used to get current number of physical connections */
+	// TODO: use atomic val
 	pCurrConns int32
 
 	/* options of the grpc connection pool */
 	pOpts PoolOptions
 	/* all of created physical connections */
 	// TODO: clean nil conn
+	// TODO: use lock-free queue to manage conns and remove sync.RWMutex
 	conns []*GrpcConn
 	/* the server address to create connection */
 	addr string
