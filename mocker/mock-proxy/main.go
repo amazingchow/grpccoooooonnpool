@@ -43,6 +43,8 @@ func main() {
 		}
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(resp.Message))
+
+		_ = conn.Close()
 	}
 
 	http.HandleFunc("/performance", handler)
