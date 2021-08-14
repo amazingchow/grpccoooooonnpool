@@ -3,6 +3,7 @@ package gpool
 import (
 	"context"
 	"fmt"
+	"os"
 	"sync"
 
 	"google.golang.org/grpc"
@@ -126,7 +127,7 @@ func (p *GrpcConnPool) Get(ctx context.Context) (*GrpcConn, error) {
 		}
 	}
 	if i == 0 && err != nil {
-		// TODO: output to stderr
+		fmt.Fprintf(os.Stderr, "failed to fetch conn from pool, err: %v\n", err)
 		return nil, err
 	}
 
