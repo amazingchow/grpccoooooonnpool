@@ -26,7 +26,7 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		conn, err := p.PickOne(ctx)
+		conn, err := p.PickOne(true)
 		if err != nil {
 			log.Printf("failed to fetch conn from gpool, err: %v\n", err)
 			w.WriteHeader(500)

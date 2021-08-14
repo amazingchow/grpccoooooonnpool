@@ -46,9 +46,13 @@ func (q *BoundedQueue) Push(x int) {
 }
 
 // Pop gets conn from the queue.
-func (q *BoundedQueue) Pop() int {
+func (q *BoundedQueue) Pop(canWait bool) int {
 	q.cond.L.Lock()
 	for q.q.Len() == 0 {
+		if !canWait {
+			q.cond.L.Unlock()
+			return -1
+		}
 		// P3: queue is empty now, wait for producers to push conn.
 		// TODO: implement q.cond.WaitWithTimeout(timeout time.Duration)
 		q.cond.Wait()
