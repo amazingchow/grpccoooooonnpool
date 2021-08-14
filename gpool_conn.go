@@ -30,6 +30,35 @@ func (c *GrpcConn) Close() error {
 // underlay TCP connection.
 // If user fetch a invalid grpc connection (timeout, server restart , etc...),
 // it's user's responsibility to use ForceClose() but not Close().
+
+// Deprecated: since grpc-go client connection has implemented the reconnect retry policy.
+/*
+https://github.com/grpc/grpc-go/blob/master/clientconn.go
+
+_________________________________________________________
+func (ac *addrConn) connect() error {
+	ac.mu.Lock()
+	if ac.state == connectivity.Shutdown {
+		ac.mu.Unlock()
+		return errConnClosing
+	}
+	if ac.state != connectivity.Idle {
+		ac.mu.Unlock()
+		return nil
+	}
+	// Update connectivity state within the lock to prevent subsequent or
+	// concurrent calls from resetting the transport more than once.
+	ac.updateConnectivityState(connectivity.Connecting, nil)
+	ac.mu.Unlock()
+
+	ac.resetTransport()
+	return nil
+}
+
+...
+
+_________________________________________________________
+*/
 func (c *GrpcConn) ForceClose() error {
 	c.pool.decrRef()
 	return c.recycle()
