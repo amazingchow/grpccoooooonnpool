@@ -10,7 +10,7 @@ type PoolOptions struct {
 	Dial func(address string) (*grpc.ClientConn, error)
 	/* maximum number of idle connections in the pool */
 	MaxIdles uint32
-	// /* maximum number of connections can be allocated by the pool at a given time */
+	/* maximum number of connections can be allocated by the pool at a given time */
 	// MaxActives uint32
 	/* maximum number of concurrent streams attached to a single TCP connection */
 	MaxConcurrentStreams uint32

@@ -68,12 +68,12 @@ func (p *GrpcConnPool) Status() string {
 
 // PickOne returns a available connection from the pool.
 // User should use GrpcConn.Close() to put the connection back to the pool.
-func (p *GrpcConnPool) PickOne(canWait bool) (*GrpcConn, error) {
+func (p *GrpcConnPool) PickOne(wait bool) (*GrpcConn, error) {
 	if atomic.LoadUint32(&p.atomicPCurrConns) == 0 {
 		return nil, ErrPoolAlreadyClosed
 	}
 
-	idx := p.q.Pop(canWait)
+	idx := p.q.Pop(wait)
 	if idx == -1 {
 		return nil, ErrPoolResourceAlreadyExhausted
 	}
