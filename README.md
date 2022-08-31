@@ -1,6 +1,6 @@
-# photon-dance-gpool
+# grpccoooooonnpool
 
-gRPC connection pool for client side
+gRPC connection pool for client side.
 
 ## Contributing
 
@@ -14,7 +14,7 @@ gRPC connection pool for client side
 
 ### Step 3
 
-* 🔃 Create a new PR using https://github.com/amazingchow/photon-dance-gpool/compare!
+* 🔃 Create a new PR using https://github.com/amazingchow/grpccoooooonnpool/compare!
 
 ## Support
 

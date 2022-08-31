@@ -1,4 +1,4 @@
-name: ci workflow for photon-dance-gpool
+name: ci workflow for grpccoooooonnpool
 
 on:
   push:
@@ -26,4 +26,4 @@ jobs:
         with:
           version: v1.41.1
       - name: Build
-        run: go build /home/runner/work/photon-dance-gpool/photon-dance-gpool/mocker/mock-proxy
+        run: go build /home/runner/work/grpccoooooonnpool/grpccoooooonnpool/mocker/mock-proxy

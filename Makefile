@@ -1,5 +1,5 @@
 VERSION     := v1.0.0
-PROJECT     := github.com/amazingchow/photon-dance-gpool
+PROJECT     := github.com/amazingchow/grpccoooooonnpool
 SRC         := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 TARGETS     := mock-proxy mock-server
 ALL_TARGETS := $(TARGETS)

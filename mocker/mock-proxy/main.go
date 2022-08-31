@@ -8,7 +8,7 @@ import (
 
 	pb "google.golang.org/grpc/examples/helloworld/helloworld"
 
-	gpool "github.com/amazingchow/photon-dance-gpool"
+	gpool "github.com/amazingchow/grpccoooooonnpool"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/amazingchow/photon-dance-gpool
+module github.com/amazingchow/grpccoooooonnpool
 
 go 1.18
 
