@@ -2,6 +2,10 @@
 
 gRPC connection pool for client side.
 
+## How to use it?
+
+see ``./mocker/simple-proxy`` as your nice example.
+
 ## Contributing
 
 ### Step 1
