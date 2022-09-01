@@ -1,4 +1,4 @@
-package gpool
+package grpccoooooonnpool
 
 import (
 	"google.golang.org/grpc"
@@ -6,9 +6,9 @@ import (
 
 // GrpcConn encapsulates the grpc.ClientConn.
 type GrpcConn struct {
-	conn  *grpc.ClientConn
-	pool  *GrpcConnPool
 	index int
+	conn  *grpc.ClientConn
+	p     *GrpcClientConnPool
 }
 
 // Underlay returns the actual grpc connection.
@@ -18,18 +18,16 @@ func (c *GrpcConn) Underlay() *grpc.ClientConn {
 
 // Close decreases the reference of grpc connection if pool not full
 // or just close the underlay TCP connection.
-func (c *GrpcConn) Close() error {
-	c.pool.decrRef()
-	c.pool.q.Push(c.index)
-	return nil
+func (c *GrpcConn) Close() {
+	c.p.decrRef()
+	c.p.q.Push(c.index)
 }
 
-func (c *GrpcConn) recycle() error {
+func (c *GrpcConn) Recycle() {
 	conn := c.conn
 	c.conn = nil
-	c.pool = nil
+	c.p = nil
 	if conn != nil {
-		return conn.Close()
+		_ = conn.Close()
 	}
-	return nil
 }

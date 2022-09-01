@@ -1,5 +1,5 @@
 SRC         := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
-TARGETS     := mock-proxy mock-server
+TARGETS     := simple-grpc-server simple-proxy
 ALL_TARGETS := $(TARGETS)
 
 ifeq ($(race), 1)
