@@ -3,7 +3,7 @@ module github.com/amazingchow/grpccoooooonnpool
 go 1.18
 
 require (
-	github.com/gammazero/deque v0.1.0
+	github.com/gammazero/deque v0.1.2
 	github.com/pkg/errors v0.9.1
 	google.golang.org/grpc v1.40.0
 	google.golang.org/grpc/examples v0.0.0-20210812181202-a42567fe92f0

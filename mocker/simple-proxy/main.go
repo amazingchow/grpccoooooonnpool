@@ -12,20 +12,24 @@ import (
 )
 
 func main() {
-	p, err := gpool.NewGrpcConnPool("localhost:18889", gpool.PoolOptions{
-		Dial:                 gpool.DefaultDialWithInsecure,
-		MaxIdles:             32,
-		MaxConcurrentStreams: 100,
-	})
+	opts := []gpool.PoolSettingsOption{
+		gpool.WithAddr("127.0.0.1:18889"),
+		gpool.WithDialFunc(gpool.DefaultDialWithInsecure),
+		gpool.WithMaxIdles(8),
+		gpool.WithMaxStreams(64),
+	}
+	p, err := gpool.NewGrpcClientConnPool(opts...)
 	if err != nil {
 		log.Fatalf("failed to create grpccoooooonnpool, err: %v\n", err)
+	} else {
+		log.Println("create grpccoooooonnpool")
 	}
 
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		conn, err := p.PickOne(true /* wait */)
+		conn, err := p.PickOne(true /* wait */, 200 /* waitTime */)
 		if err != nil {
 			log.Printf("failed to fetch conn from grpccoooooonnpool, err: %v\n", err)
 			w.WriteHeader(500)
@@ -42,9 +46,10 @@ func main() {
 		w.WriteHeader(200)
 		_, _ = w.Write([]byte(resp.Message))
 
-		_ = conn.Close()
+		conn.Close()
 	}
 
 	http.HandleFunc("/performance", handler)
-	_ = http.ListenAndServe("localhost:18888", nil)
+	log.Printf("run simple-proxy on ':18888'\n")
+	http.ListenAndServe(":18888", nil)
 }

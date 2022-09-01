@@ -44,6 +44,7 @@ func main() {
 		}
 		done <- struct{}{}
 	}()
+	log.Printf("run simple-grpc-server on ':18889'\n")
 
 	<-sigCh
 	srv.GracefulStop()
